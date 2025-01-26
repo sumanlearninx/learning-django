@@ -1,0 +1,1 @@
+This repository includes all the lessons learned in django basics
