@@ -1,0 +1,75 @@
+Step 1:
+-----
+
+
+# make project directory
+
+# create virtual environment
+~ python -m venv .venv 
+
+# activate virtual environment
+~ ./venv/Scripts/activate
+
+# install django
+~ pip install django 
+
+# create django project 
+~ django-admin startproject <project_name>
+
+# go to django project directory 
+~ cd <project_name> 
+
+# create django application
+~ python manage.py startapp <app_name>
+
+
+Step 2:
+------
+
+Go to apps.py inside django application 
+You can see Config Class of that application 
+Copy it 
+
+Go to settings.py inside django project 
+INSTALLED_APPS=[
+    '<app_name>.apps.<config_class>'
+]
+
+
+Step 3:
+------
+
+Inside django application:
+
+views.py 
+
+        from django.http import HttpResponse
+        def index(request):
+            return HttpResponse("Hello From Application")
+
+
+create urls.py 
+        from django.urls import path
+        from .views import index
+
+        urlpatterns = [
+            path('', index)
+        ]
+
+Inside django project:
+
+urls.py 
+
+        from django.uls import path, include
+
+        urlpatterns = [
+            path('', include('<app_name>.urls'))
+        ]
+
+
+Step 4:
+-----
+
+Run the django application 
+
+~ python3 manage.py runserver
