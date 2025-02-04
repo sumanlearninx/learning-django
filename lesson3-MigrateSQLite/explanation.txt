@@ -1,0 +1,46 @@
+Step 1:
+------
+create virtual env
+activate virtual env
+Create django project 
+Create djano application
+Link django application to project from settings.py adding Config Class
+In application:
+    ~ define views in views.py
+    ~ define urlpatterns in urls.py
+In project:
+    ~ include the urls of application 
+
+
+Step 2:
+------
+
+Making models - defining SCHEMA 
+
+Application > models.py 
+
+    from django.db import models 
+
+    class Tour(models.Model):
+        origin_country = models.CharField(max_length=70)
+        destination_country = models.CharField(max_length=70)
+        number_of_nights = models.IntegerField()
+        price = models.FloatField()
+
+
+Step 3:
+-----
+
+- Make migrations 
+
+~ python3 manage.py makemigrations 
+
+- You can see new file (0001_initial.py) being created inside 
+    migrations folder which has the same model of models.py
+
+Step 4:
+-------
+
+- Migrate 
+
+~ python3 manage.py migrate 
