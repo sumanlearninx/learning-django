@@ -1,0 +1,94 @@
+Step 1:
+------
+
+Django Project And Application Setup
+
+~ python3 -m venv .venv
+~ source .venv/bin/activate
+~ pip3 install django
+~ django-admin startproject worldtour
+~ cd worldtour
+~ python3 manage.py startapp asiatoursagency
+
+settings.py:
+    INSTALLED_APPS = (
+        'asiatoursagency.apps.<Config>,
+    )
+
+asiatoursagency:
+
+    views.py
+        from django.http import HttpResponse
+        def home(request):
+            return HttpResponse("Hello From App")
+
+    urls.py
+        from django.urls import path
+        from . import views
+        urlpatterns = [
+            path('', views.home, name = "home")
+        ]
+    
+    models.py
+        from django.db import models 
+        class Tour(models.Model):
+            origin_country = models.CharField(max_length=70)
+            destination_country = models.CharField(max_length=70)
+            number_of_nights = models.IntegerField()
+            price = models.FloatField()
+
+worldtour:
+
+    urls.py
+        from django.urls import path,include
+        urlpatterns = [
+            path('', include('asiatoursagency.urls'))
+        ]
+
+Step 2:
+------
+
+~ python3 manage.py makemigrations
+~ python3 manage.py migrate 
+
+Step 3:
+--------
+
+Running python interactive shell
+
+~ python3 manage.py shell
+~ from asiatoursagency.models import Tour
+
+~ to1 = Tour(origin_country = "Nepal", destination_country = "Japan", number_of_nights = 10, price = 10000)
+
+~ to1.origin_country
+~ to1.destination_country
+
+~ to1 > Returns the ClassTour:object 
+
+So,
+
+Step 4:
+------
+
+models.py
+    class Tour(models.Model):
+        origin_country = ....
+        ..........
+        .......
+        ........
+
+        def __str__(self):
+            tour_id = getattr(self,'id',"not saved")
+            return f"ID: {tour_id} From {self.origin_country} To {self.destination_country} No of nights {self.number_of_nights} Price ${self.price}"
+
+
+
+Step 5:
+------
+
+~ python3 manage.py shell
+~ from asiatoursagency.models import Tour
+~ to2 = ......
+
+~ to1 
