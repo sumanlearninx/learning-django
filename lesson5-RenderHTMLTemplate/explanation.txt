@@ -1,0 +1,110 @@
+Step 1 :
+------
+
+Till now 
+
+
+1. create virtual environment
+    ~ python -m venv .venv
+
+2. activate virtual environment 
+    # mac - source .venv/bin/activate
+
+3. install django
+    pip install django
+
+4. create django project 
+    django-admin startproject worldtour
+
+5. cd worldtour
+
+6. create django application 
+    python manage.py startapp asiatours
+
+7. In settings.py add the app in INSTALLED_APPS = ['asiatours']
+
+8. In models.py create Tour schema 
+
+    from django.db import models
+    class Tour(models.Model):
+        origin_country = models.CharField(max_length = 70)
+        destination_country = models.CharField(max_length = 70)
+        number_of_nights = models.IntegerField()
+        price = models.FloatField()
+
+        def __str__(self):
+            tour_id = getattr(self, 'id', 'not saved')
+            return f"ID: {tour_id} From {self.origin_country} To {self.destination_country}, No. of nights {se;f.number_of_nights} and price ${self.price}"
+    
+9. Make Migrations
+
+    ~ python manage.py makemigrations
+    ~ python manage.py migrate
+
+10 . Go to python interactive shell
+
+    ~ python manage.py shell
+        from asiatours.models import Tour
+        to1 = Tour(origin_country = "Npl", destination_country = "Jpn", number_of_nights = 10, price = 1500)
+        to2 = Tour(origin_country = "Ind", destination_country = "Npl", number_of_nights = 5, price = 1500)
+        to1.save()
+        to2.save()
+
+
+--------------
+
+
+Step 2:
+--------
+
+# Defining view and rendering html template 
+
+    from django.shortcuts import render 
+    from .models import Tour
+    def home_view(request):
+        tours = Tour.objects.all()
+        context = {
+            'tours':tours
+        }
+        return render(request, "index.html", context)
+
+
+Step 3:
+-------
+
+Create templates folder in your application 
+Create index.html file insdie the templates folder
+
+    <body>
+        <h1>Tours</h1>
+        <ul>
+            {% for tour in tours %}
+            <li>{{tour}}</li>
+            {% endfor %}
+        </ul>
+        
+
+    </body>
+
+
+
+
+# Define urls in urls.py
+
+    from django.urls import path
+    from . import views 
+
+    urlpatterns = [
+        path('', views.home_view, name = "home")
+    ]
+
+# Include the urls in project urls.py 
+
+    from django.urls import path, Include
+    urlpatterns = [
+        path('', include('asiatours.urls)),
+    ]
+
+# run the application
+
+    ~ python manage.py runserver
