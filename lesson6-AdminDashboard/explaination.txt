@@ -1,0 +1,114 @@
+Django Admin Dashboard
+
+
+Step 1:
+-------
+
+Create virtual environment 
+    ~ python -m venv .venv
+
+Activate virtual environment
+    ~ source .venv/bin/activate 
+
+Install django 
+    ~ pip install django 
+
+Create django project 
+    ~ django-admin startproject worldtour
+
+Switch directory 
+    ~ cd worldtour
+
+Create django application
+    ~ python manage.py startapp asiatours
+
+In settings.py
+    INSTALLED_APPS = ['asiatours']
+
+Application > models.py
+
+        from django.db import models 
+
+        class Tour(models.Model):
+            origin_country = models.CharField(max_length=50)
+            destination_country = models.CharField(max_length=50)
+            number_of_nights = models.IntegerField()
+            price = models.FloatField()
+
+            def __str__(self):
+                tour_id = getattr(self,'id','not saved')
+                return f"ID: {tour_id} From {self.origin_country} To {self.destination_country} No. of nights {self.number_of_nights} Price ${self.price}"
+
+
+
+Terminal > makemigrations
+
+
+
+Application > views.py 
+
+        from django.shortcuts import render
+        from . models import Tour
+
+        def home_view(request):
+            tours = Tour.objects.all()
+            context = {
+                'tours':tours
+            }
+            return render(request, "home.html", context)
+
+Application > urls.py 
+
+        from django.urls import path
+        from . import views 
+        urlpatterns = [
+            path('',views.home_view, name = "home")
+        ]
+
+Application > templates > home.html 
+
+        <body>
+            <h1>Asia Tours</h1>
+            <ul>
+                {% for tour in tours %}
+                <li>{{tour}}</li>
+                {% endfor %}
+            </ul>
+        </body>
+
+Project > urls.py
+
+        from django.urls import path, include
+
+        urlpatterns = [
+            path('',include('asiatours.urls'))
+        ]
+
+
+
+Step 2:
+--------
+
+Terminal > 
+
+    ~ python manage.py createsuperuser 
+        Enter email, username , password 
+
+Step 3:
+------
+
+Application > admin.py
+
+        from .models import Tour
+
+        admin.site.register(Tour)
+
+Step 3:
+------
+
+    Go to localhost:3000/admin
+        - Login with the details 
+        - Go to tours 
+        - Add/update/delete tours
+        - Create users, staff users, admin users 
+        - Create groups
