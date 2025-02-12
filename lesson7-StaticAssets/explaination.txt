@@ -1,0 +1,108 @@
+Static Assets In Django
+
+
+Step 1:
+------
+
+All the basic steps till now
+
+
+Create environment variable
+    ~ python -m venv .venv 
+
+Activate virtual environment 
+    ~ source .venv/bin/activate 
+
+Install Django
+    ~ pip install Django
+
+Create django project 
+    ~ django-admin startproject staticProject
+
+change Directory 
+    ~ cd staticProject
+
+Create django application
+    ~ python manage.py startapp staticApp
+
+Project > settings.py 
+    INSTALLED_APPS = ['staticApp']
+
+Application > templates > index.html
+    <body>
+        <h1>Hello From Application</h1>
+        <button>Click Me</button>
+    </body>
+
+Application > views.py
+    from django.shortcuts import render
+    def home_view(request):
+        return render(request,'index.html')
+
+Application > urls.py
+    from django.urls import path
+    from . import views 
+    urlpatterns = [
+        path('', views.home_view, name = "home")
+    ]
+
+Project > urls.py
+    from django.urls import path,include 
+    urlpatterns = [
+        path('', 'staticApp.urls')
+    ]
+
+
+Step 2:
+------
+
+Settings for static assets like css, js 
+
+
+Application > Create folder static 
+            > Inside static 
+                > Create folder styles
+                    > Create file styles.css
+
+                > Create folder js
+                    > Create file script.js 
+                
+                > Create folder images
+                    >Insert image img.jpg
+
+Project > settings.py
+    import os
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
+
+Application > templates > index.html
+
+    {% load static %}
+    <html>
+        <head>
+            <title>Home Page</title>
+            <link rel="stylesheet" type="text/css" href="{% static 'styles/styles.css' %}" />
+        </head>
+        <body>
+            <h1>Hello From Application</h1>
+            <img src="{% static 'images/img.jpg' %}" />
+            <button onclick="CallMe()">Click Me</button>
+
+            <script src={% static 'js/script.js' %}</script>
+        </body>
+    </html>
+
+
+Create styles and js 
+
+styles.css 
+    h1{
+        color:Green;
+        margin:auto;
+    }
+
+script.js
+    function CallMe(){
+        alert("You clicked me ??)
+    }
