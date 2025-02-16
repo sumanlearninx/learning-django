@@ -1,0 +1,114 @@
+Django Forms
+
+
+Step 1:
+------
+
+Setup working space till now 
+
+Virtual Environment
+    ~ python -m venv .venv
+
+Activate Virtual Environment
+    ~ source .venv/bin/activate
+
+Install django 
+    ~ pip install django 
+
+Create django project
+    ~ django-admin startproject formsProject 
+
+Change directory 
+    ~ cd formsProject 
+
+Create django application 
+    ~ python manage.py startapp formsApp
+
+Include app in settings.py 
+    INSTALLED_APPS = ['formsApp']
+
+
+Include the urls.py file of app in urls.py of project 
+    from django.urls import path, include 
+    urlpatterns = [
+        path('', include('formsApp.urls'))
+    ]
+
+--------------------
+
+Step 2:
+------
+
+Create Register Form : Application > forms.py 
+
+    from django import Forms 
+    
+    class ContactForm(forms.Form):
+        name = forms.CharField(max_length = 50)
+        email = forms.EmailField()
+        description = forms.CharField(widget = forms.Textarea())
+
+        def __str__(self):
+            return f"Hello {self.name}, your message has been sent"
+
+
+Create urls.py file in formsApp 
+
+    from django.urls import path
+    from . import views
+    urlpatterns = [
+        path('', views.home_view, name = "home"),
+        path('contact/', views.contact_view, name = "contact"),
+        path('contact/success/', views.contact_success_view, name = "contact_success"),
+    ]
+
+
+
+
+Create views for different routes in app > views.py
+
+    from django.shortcuts import render, redirect
+    from .forms import ContactForm
+
+    def home_view(request):
+        return render(request,'pages/home.html')
+
+    def contact_view(request):
+        if request.method == "POST":
+            form = ContactForm(request.POST)
+            return redirect('contact_success')
+        form = ContactForm()
+        return render(request,'pages/contact.html', {'form':form})
+
+    def contact_success_view(request):
+        return render(request,'pages/contact_success.html')
+
+
+App > templates > pages 
+
+    index.html
+
+        <body>
+            <h1>Home Page</h1>
+            <p>Click Here to Contact Us</p>
+            <a href="{% url 'contact' %}">Contact Us </a>
+        </body>
+
+
+    contact.html
+
+        <body>
+            <h1>Contact Us</h1>
+            <form method="POST" action='{% url 'contact_success' %}'>
+                {% csrf_token %}
+                {{form.as_p}}
+            </form>
+        </body>
+
+    contact_success.html
+
+         <body>
+            <h1>Contact Success</h1>
+            <p>Your message has been sent</p>
+            <a href="{% url 'home' %}">Home Page</a>
+        </body>
